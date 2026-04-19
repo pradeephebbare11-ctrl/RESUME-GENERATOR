@@ -8,7 +8,7 @@ from io import BytesIO
 from pathlib import Path
 import requests
 from fpdf import FPDF
-from openai import OpenAI
+
 
 st.set_page_config(page_title="CareerPilot AI", layout="wide")
 
