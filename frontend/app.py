@@ -2,7 +2,7 @@ import streamlit as st
 import os
 from io import BytesIO
 from fpdf import FPDF
-from openai import OpenAI
+from groq import Groq
 
 st.set_page_config(page_title="CareerPilot AI", layout="wide")
 
@@ -45,10 +45,13 @@ if "api_key" not in st.session_state:
     st.session_state.api_key = os.getenv("GROQ_API_KEY", "")
 
 def get_client():
-    return OpenAI(api_key=st.session_state.api_key, base_url=GROQ_BASE_URL)
+    if not st.session_state.api_key:
+        raise ValueError("Add Groq API key in settings ⚙️")
+    return Groq(api_key=st.session_state.api_key)
 
 def generate_text(prompt, system):
     client = get_client()
+
     response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
         messages=[
@@ -56,6 +59,7 @@ def generate_text(prompt, system):
             {"role": "user", "content": prompt},
         ],
     )
+
     return response.choices[0].message.content
 
 def build_pdf(text):
